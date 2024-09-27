@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Clone</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div id="chat-box" class="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="question-input" placeholder="Ask me anything..." autofocus>
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('send-btn').addEventListener('click', async () => {
+            const questionInput = document.getElementById('question-input');
+            const chatBox = document.getElementById('chat-box');
+            const question = questionInput.value;
+
+            // Hiển thị câu hỏi của người dùng
+            chatBox.innerHTML += `<div class="user-message">You: ${question}</div>`;
+            questionInput.value = '';
+
+            // Gửi câu hỏi đến server
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question })
+            });
+
+            const data = await response.json();
+
+            // Hiển thị câu trả lời từ server
+            chatBox.innerHTML += `<div class="bot-message">Chatbot: ${data.answer}</div>`;
+
+            // Cuộn xuống để hiển thị tin nhắn mới nhất
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html>
